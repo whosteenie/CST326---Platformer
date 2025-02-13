@@ -11,15 +11,17 @@ public class PlayerMovement : MonoBehaviour
 	public Collider collider;
 	public LayerMask blockLayer;
 
-	private float speed = 3f;
-	private Boolean isRunning = false;
+	private float speed = 5f;
+	private bool isRunning = false;
 	private float jumpForce = 10f;
 	private float currentJump = 0f;
-	private float maxJump = 300f;
-	private Boolean isJumping = false;
+	private float maxJump = 90f;
+	private bool isJumping = false;
 
-	private Boolean isGrounded = true;
-	private Boolean hitHead = false;
+	private bool isGrounded = true;
+	private bool hitHead = false;
+	private bool superMario = false;
+	private bool fireMario = false;
 
 
 	public TextMeshProUGUI score;
@@ -35,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {		
 		// Test hit block
 		if(Input.GetMouseButtonDown(0)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -89,11 +91,13 @@ public class PlayerMovement : MonoBehaviour
 
 		// Jump
 		if((isJumping || isGrounded) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))) {
+			Debug.Log(currentJump);
 			isJumping = true;
 			isGrounded = false;
 			
-			if(currentJump >= maxJump || hitHead) {
+			if(currentJump >= maxJump || HitHead()) {
 				isJumping = false;
+				currentJump = 0f;
 			} else {
 				transform.Translate(Vector3.up * jumpForce * Time.deltaTime);
 				currentJump += 1f;
@@ -105,13 +109,20 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+	private void HitBlock(RaycastHit block) {
+
+	}
+
 	private void OnCollisionEnter(Collision collision)
 	{
 		isGrounded = true;
 	}
 
-	Boolean HitHead()
+	bool HitHead()
 	{
-		return Physics.Raycast(transform.position, Vector2.up, collider.bounds.extents.y);
+		RaycastHit hit;
+        bool hitCheck = Physics.Raycast(transform.position, Vector2.up, out hit, collider.bounds.extents.y);
+		HitBlock(hit);
+		return hitCheck;
 	}
 }
