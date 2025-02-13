@@ -1,4 +1,6 @@
 using System;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,68 +8,110 @@ public class PlayerMovement : MonoBehaviour
 	public Camera camera;
 
 	public Rigidbody rb;
+	public Collider collider;
+	public LayerMask blockLayer;
 
 	private float speed = 3f;
 	private Boolean isRunning = false;
 	private float jumpForce = 10f;
 	private float currentJump = 0f;
-	private float maxJump = 100f;
+	private float maxJump = 300f;
+	private Boolean isJumping = false;
 
 	private Boolean isGrounded = true;
+	private Boolean hitHead = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+	public TextMeshProUGUI score;
+	public TextMeshProUGUI coins;
+	private int currentScore = 0;
+	private int currentCoins = 0;
+
+	// Start is called once before the first execution of Update after the MonoBehaviour is created
+	void Start()
     {
-        
+		
     }
 
     // Update is called once per frame
     void Update()
     {
-		Vector3 currentPosition = transform.position;
+		// Test hit block
+		if(Input.GetMouseButtonDown(0)) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if(Physics.Raycast(ray, out hit, 100)) {
+				Debug.Log(hit.transform.name);
+				Debug.Log("hit");
+				if(hit.transform.name == "Question(Clone)") {
+					if(currentCoins < 99) {
+						currentCoins++;
+					} else {
+						currentCoins = 0;
+						currentScore += 1000;
+					}
+					
+					currentScore += 200;
+				}
+				if(hit.transform.name == "Brick(Clone)") {
+					currentScore += 100;
+					Destroy(hit.transform.gameObject);
+				}
+			}
+		}
 
-		if(Input.GetKeyDown(KeyCode.LeftShift)) {
+		if(currentScore > 999900) {
+			currentScore = 999900;
+		}
+
+		score.text = currentScore.ToString("D6");
+		coins.text = "X" + currentCoins.ToString("D2");
+
+		// Sprint
+		if(isGrounded && Input.GetKeyDown(KeyCode.LeftShift)) {
 			isRunning = true;
 			speed *= 2;
 		}
-		if(Input.GetKeyUp(KeyCode.LeftShift)) {
+		if(isGrounded && isRunning && !Input.GetKey(KeyCode.LeftShift)) {
 			isRunning = false;
 			speed /= 2;
 		}
 
+		// Move Right
 		if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
 			transform.Translate(Vector3.right * speed * Time.deltaTime);
 		}
 
+		// Move Left
 		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
 			transform.Translate(Vector3.left * speed * Time.deltaTime);
 		}
 
-		if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow)) {
+		// Jump
+		if((isJumping || isGrounded) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))) {
+			isJumping = true;
 			isGrounded = false;
-
-			if(currentJump < maxJump) {
+			
+			if(currentJump >= maxJump || hitHead) {
+				isJumping = false;
+			} else {
 				transform.Translate(Vector3.up * jumpForce * Time.deltaTime);
 				currentJump += 1f;
 			}
 		}
-	}
 
-	private void FixedUpdate()
-	{
-		//Debug.Log(currentJump);
-
-		//if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow)) {
-		//	if(currentJump < maxJump) {
-		//		rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-		//		currentJump += 1f;
-		//	}
-		//}
+		if(isGrounded) {
+			currentJump = 0f;
+		}
 	}
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		currentJump = 0f;
 		isGrounded = true;
+	}
+
+	Boolean HitHead()
+	{
+		return Physics.Raycast(transform.position, Vector2.up, collider.bounds.extents.y);
 	}
 }
