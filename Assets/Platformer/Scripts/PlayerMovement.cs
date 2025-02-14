@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,14 +8,17 @@ public class PlayerMovement : MonoBehaviour
 
 	public Rigidbody rb;
 	public Collider collider;
-	public LayerMask blockLayer;
+	public SpriteRenderer spriteRenderer;
 
-	private float speed = 5f;
+	private float speed = 0.1f;
 	private bool isRunning = false;
-	private float jumpForce = 10f;
+	private float jumpForce = 1.6f;
 	private float currentJump = 0f;
-	private float maxJump = 90f;
+	private float maxJump = 6f;
 	private bool isJumping = false;
+
+	private float maxSpeed = 2f;
+	private float accel = 1f;
 
 	private bool isGrounded = true;
 	private bool hitHead = false;
@@ -38,6 +40,10 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if(transform.position.x - camera.transform.position.x > 1) {
+			camera.transform.position = new Vector3(transform.position.x - 1, camera.transform.position.y, camera.transform.position.z);
+		}
+
 		// Test hit block
 		if(Input.GetMouseButtonDown(0)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -79,32 +85,53 @@ public class PlayerMovement : MonoBehaviour
 			speed /= 2;
 		}
 
+		
+
+		
+
+		if(isGrounded) {
+			currentJump = 0f;
+		}
+	}
+
+	private void FixedUpdate()
+	{
+		float moveInput = 0f;
+
 		// Move Right
 		if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-			transform.Translate(Vector3.right * speed * Time.deltaTime);
+			spriteRenderer.flipX = false;
+			moveInput = 1f;
 		}
 
 		// Move Left
-		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-			transform.Translate(Vector3.left * speed * Time.deltaTime);
+		if(camera.transform.position.x - transform.position.x < 14.25 && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))) {
+			spriteRenderer.flipX = true;
+			moveInput = -1f;
 		}
 
-		Debug.Log("currentJump: " + currentJump);
+		//if(Mathf.Abs(rb.linearVelocity.x) < maxSpeed) {
+		//	rb.AddForce(Vector3.right * moveInput * accel, ForceMode.VelocityChange);
+		//}
+
+		transform.Translate(Vector3.right * moveInput * speed);
+
 		// Jump
 		if((isJumping || isGrounded) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))) {
 			isJumping = true;
 			isGrounded = false;
-			
+
 			if(currentJump >= maxJump || HitHead()) {
 				isJumping = false;
 				currentJump = 0f;
 			} else {
-				transform.Translate(Vector3.up * jumpForce * Time.deltaTime);
+				rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
 				currentJump += 1f;
 			}
 		}
 
-		if(isGrounded) {
+		if(Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.UpArrow)) {
+			isJumping = false;
 			currentJump = 0f;
 		}
 	}
@@ -129,7 +156,9 @@ public class PlayerMovement : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		isGrounded = true;
+		if((collider.bounds.center.y - collider.bounds.extents.y) - (collision.collider.bounds.center.y - collision.collider.bounds.extents.y) > 0) {
+			isGrounded = true;
+		}
 	}
 
 	bool HitHead()
