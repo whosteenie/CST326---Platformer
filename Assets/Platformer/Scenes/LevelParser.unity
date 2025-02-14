@@ -1442,6 +1442,7 @@ GameObject:
   - component: {fileID: 1774421375}
   - component: {fileID: 1774421377}
   - component: {fileID: 1774421376}
+  - component: {fileID: 1774421378}
   m_Layer: 5
   m_Name: COIN
   m_TagString: Untagged
@@ -1465,8 +1466,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -124.73, y: -38.31}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -122.68, y: -39.68}
+  m_SizeDelta: {x: 50, y: 80}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1774421376
 MonoBehaviour:
@@ -1488,7 +1489,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 99b3770a3c5d26942ba94e300b1ebf67, type: 3}
+  m_Sprite: {fileID: 620802988, guid: 7cf47cb0f48e6d949a840185ccc127ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1496,7 +1497,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
-  m_UseSpriteMesh: 0
+  m_UseSpriteMesh: 1
   m_PixelsPerUnitMultiplier: 1
 --- !u!222 &1774421377
 CanvasRenderer:
@@ -1506,6 +1507,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774421374}
   m_CullTransparentMesh: 1
+--- !u!111 &1774421378
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774421374}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: a0c9fe5f1b3b0d047a33e59d51b3305b, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: a0c9fe5f1b3b0d047a33e59d51b3305b, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &1822890097
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,5 +17,5 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 		timer.text = (maxTime - (int) Time.time).ToString();
-    }
+	}
 }

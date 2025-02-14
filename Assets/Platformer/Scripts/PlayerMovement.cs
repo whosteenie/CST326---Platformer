@@ -89,9 +89,9 @@ public class PlayerMovement : MonoBehaviour
 			transform.Translate(Vector3.left * speed * Time.deltaTime);
 		}
 
+		Debug.Log("currentJump: " + currentJump);
 		// Jump
 		if((isJumping || isGrounded) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))) {
-			Debug.Log(currentJump);
 			isJumping = true;
 			isGrounded = false;
 			
@@ -109,8 +109,22 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	private void HitBlock(RaycastHit block) {
+	private void HitBlock(RaycastHit block)
+	{
+		if(block.transform.name == "Brick(Clone)") {
+			currentScore += 100;
+			Destroy(block.transform.gameObject);
+		}
+		if(block.transform.name == "Question(Clone)") {
+			if(currentCoins < 99) {
+				currentCoins++;
+			} else {
+				currentCoins = 0;
+				currentScore += 1000;
+			}
 
+			currentScore += 200;
+		}
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -120,9 +134,13 @@ public class PlayerMovement : MonoBehaviour
 
 	bool HitHead()
 	{
+		Ray ray = new Ray(transform.position, Vector2.up);
 		RaycastHit hit;
-        bool hitCheck = Physics.Raycast(transform.position, Vector2.up, out hit, collider.bounds.extents.y);
-		HitBlock(hit);
-		return hitCheck;
+		if(Physics.Raycast(ray, out hit, collider.bounds.extents.y)) {
+			HitBlock(hit);
+			return true;
+		}
+
+		return false;
 	}
 }
