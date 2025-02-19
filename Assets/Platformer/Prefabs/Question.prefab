@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2652198492393551389}
   - component: {fileID: 2652198492393551388}
   - component: {fileID: 2674180184845037794}
-  - component: {fileID: 7924109454807066158}
   m_Layer: 3
   m_Name: Question
   m_TagString: Untagged
@@ -127,16 +126,3 @@ Animation:
   m_AnimatePhysics: 0
   m_UpdateMode: 0
   m_CullingType: 0
---- !u!114 &7924109454807066158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2652198492393551387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4399ee88140c438aa7e37790f73d7b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hasHit: 0

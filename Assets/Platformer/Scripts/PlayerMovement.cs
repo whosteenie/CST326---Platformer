@@ -85,10 +85,6 @@ public class PlayerMovement : MonoBehaviour
 			speed /= 2;
 		}
 
-		
-
-		
-
 		if(isGrounded) {
 			currentJump = 0f;
 		}
@@ -117,7 +113,15 @@ public class PlayerMovement : MonoBehaviour
 		transform.Translate(Vector3.right * moveInput * speed);
 
 		// Jump
-		if((isJumping || isGrounded) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))) {
+		bool jumpGetKey = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow);
+		bool jumpGetKeyUp = Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.UpArrow);
+
+		if(jumpGetKeyUp) {
+			isJumping = false;
+			currentJump = 0f;
+		}
+		
+		if((isJumping || isGrounded) && jumpGetKey) {
 			isJumping = true;
 			isGrounded = false;
 
@@ -128,11 +132,6 @@ public class PlayerMovement : MonoBehaviour
 				rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
 				currentJump += 1f;
 			}
-		}
-
-		if(Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.UpArrow)) {
-			isJumping = false;
-			currentJump = 0f;
 		}
 	}
 
@@ -158,6 +157,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		if((collider.bounds.center.y - collider.bounds.extents.y) - (collision.collider.bounds.center.y - collision.collider.bounds.extents.y) > 0) {
 			isGrounded = true;
+			currentJump = 0f;
 		}
 	}
 
